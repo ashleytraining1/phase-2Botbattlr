@@ -1,13 +1,13 @@
 import React from "react";
 import BotCard from "./BotCard"
 
-function BotCollection({collection, updateBot, handleDeleteClick}) {
+function BotCollection({collection, updateBot, onDeleteBot}) {
 const myBots = collection.map(bot => 
 <BotCard 
 key={bot.id} 
 bot={bot} 
 botEvent={updateBot}
-onDeleteClick={handleDeleteClick(bot.id)}
+onDeleteBot={onDeleteBot}
 />)
  
   return (

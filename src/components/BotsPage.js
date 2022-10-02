@@ -5,9 +5,10 @@ import BotCollection from "./BotCollection";
 function BotsPage() {
   //start here with your code for step one
   const [collection, setCollection] = useState([]);
-  
+  const [army,setArmy] = useState([])
+
   useEffect(()=> {
-    fetch("http://localhost:8002/bots")
+    fetch("http://localhost:8003/bots")
     .then((response)=> response.json())
     .then((collection) => setCollection(collection))
     .catch((error) => {
@@ -15,33 +16,41 @@ function BotsPage() {
     });
   }, []);
 
-  function updateBot(bot){
-    setCollection(collection.map(machine => machine.id === bot.id? {...machine, army:true} : machine));
-  }
+  const updateBot = (armyBot) => {
+    if (!army.find((bot) => bot === armyBot)) {
+      const newBot = collection.find((bot) => bot === armyBot);
+      setArmy([...army, newBot]);
+    }
+  };
 
-  function removeBot(bot){
-    setCollection(collection.map(machine => machine.id === bot.id ? {...machine, army:false}: machine));
-  }
+  const removeBot = (armyBot) => {
+    const botArmy = army.filter((bot) => bot !== armyBot);
+    setArmy(botArmy);
+  };
 
   
 
-  function handleDeleteClick(id) {
-    fetch(`http://localhost:8002/bots/${id}`, {
-      method: "DELETE",
-    })
-      .then((r) => r.json())
-      .then(() => {
-        const updateBot = collection.filter(machine => machine.id !== id);
-        setCollection(updateBot);
+  const onDeleteBot = (armyBot) => {
+    if (army.find((bot) => bot === armyBot)) {
+      const bots = collection.filter((bot) => bot !== armyBot);
+      const botArmy = army.filter((bot) => bot !== armyBot);
+
+      setCollection(bots);
+      setArmy(botArmy);
+
+      fetch(`http://localhost:8003/bots/${armyBot.id}`, {
+        method: "DELETE",
       });
-  }
+    } else {
+      console.log("not even enlisted");
+    }
+  };
   
   return (
     <div>
-      <YourBotArmy removeBot={removeBot} collection={collection.filter(machine => machine.army)}s/>
-      <BotCollection collection={collection} updateBot={updateBot} handleDeleteClick={handleDeleteClick}/>
+      <YourBotArmy removeBot={removeBot} collection={army} onDeleteBot={onDeleteBot}/>
+      <BotCollection collection={collection} updateBot={updateBot} onDeleteBot={onDeleteBot}/>
     </div>
   )
 }
-
 export default BotsPage;

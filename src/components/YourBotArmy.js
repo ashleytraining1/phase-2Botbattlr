@@ -2,14 +2,14 @@ import React from "react";
 import BotCard from "./BotCard"
 import BotCollection from "./BotCollection";
 
-function YourBotArmy({collection, removeBot, handleDeleteClick}) {
+function YourBotArmy({collection, removeBot, onDeleteBot}) {
   const myBots = collection.map(bot => 
     <BotCard 
     key={bot.id} 
     bot={bot}
     botEvent={removeBot}
-    onDeleteClick={handleDeleteClick} 
-    />)
+    onDeleteBot={onDeleteBot}
+ />)
  
   //your bot army code here...
 
